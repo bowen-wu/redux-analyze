@@ -38,6 +38,11 @@
   }
 }
 
+.divide {
+  padding: 8px;
+  background-color: #ff0000;
+}
+
 .child {
   padding: 16px;
   margin: 16px;

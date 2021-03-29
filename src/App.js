@@ -1,13 +1,18 @@
 import React from 'react';
 import {Counter} from './features/counter/Counter';
-import './App.css';
 import SelfAchieve from './features/selfAchieve';
+import OriginalRedux from './features/originalRedux';
+import './App.css';
 
 function App() {
   return (
     <div className="App">
-      {/*<Counter/>*/}
-      <SelfAchieve/>
+      <Counter/>
+      {/*<SelfAchieve/>*/}
+
+      <div className='divide'>divide</div>
+
+      <OriginalRedux/>
     </div>
   );
 }
