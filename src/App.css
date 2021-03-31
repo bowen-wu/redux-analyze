@@ -37,3 +37,9 @@
     transform: translateY(0px)
   }
 }
+
+.child {
+  padding: 16px;
+  margin: 16px;
+  border: 1px solid #333;
+}
