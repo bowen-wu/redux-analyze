@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import createNewState from './createNewState';
 
 const appContext = React.createContext(null);
@@ -30,25 +30,22 @@ const FirstChild = () => {
   );
 };
 
-/**
- * updateState 获取不到 context
- * 也拿不到 appState + setAppState
- * 解决方案：在组件中可以获取 context + appState + setAppState
- */
-const updateState = (action) => {
-  appContextValue.setAppState(createNewState(appContextValue.appState, action));
+const createWrapper = component => props => {
+  const appContextValue = useContext(appContext);
+
+  const updateState = (action) => {
+    appContextValue.setAppState(createNewState(appContextValue.appState, action));
+  };
+
+  return React.createElement(component, {updateState}, props.children);
 };
 
-const SecondChild = () => {
+
+const SecondChild = createWrapper(({updateState}) => {
   const appContextValue = useContext(appContext);
 
   const onChange = (event) => {
     console.log('event -> ', event.target.value);
-    /**
-     * 每次更新数据都需要写
-     * appContextValue.serAppState(createNewState(appContextValue.appState, action);
-     * 提取公共的 -> updateState
-     */
     updateState({
       type: 'updateUserName',
       payload: {name: event.target.value}
@@ -61,7 +58,7 @@ const SecondChild = () => {
       <input type="text" value={appContextValue.appState.user.name} onChange={onChange}/>
     </div>
   );
-};
+});
 
 const LastChild = () => {
   return (
