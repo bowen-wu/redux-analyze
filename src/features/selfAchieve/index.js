@@ -30,15 +30,29 @@ const FirstChild = () => {
   );
 };
 
+/**
+ * updateState 获取不到 context
+ * 也拿不到 appState + setAppState
+ * 解决方案：在组件中可以获取 context + appState + setAppState
+ */
+const updateState = (action) => {
+  appContextValue.setAppState(createNewState(appContextValue.appState, action));
+};
+
 const SecondChild = () => {
   const appContextValue = useContext(appContext);
 
   const onChange = (event) => {
     console.log('event -> ', event.target.value);
-    appContextValue.setAppState(createNewState(appContextValue.appState, {
+    /**
+     * 每次更新数据都需要写
+     * appContextValue.serAppState(createNewState(appContextValue.appState, action);
+     * 提取公共的 -> updateState
+     */
+    updateState({
       type: 'updateUserName',
       payload: {name: event.target.value}
-    }));
+    });
   };
 
   return (
