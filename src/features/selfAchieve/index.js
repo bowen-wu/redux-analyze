@@ -1,4 +1,5 @@
 import React, {useState, useContext} from 'react';
+import createNewState from './createNewState';
 
 const appContext = React.createContext(null);
 
@@ -13,9 +14,9 @@ const SelfAchieve = () => {
       <SecondChild/>
       <LastChild/>
     </appContext.Provider>
-  )
+  );
 
-}
+};
 
 const FirstChild = () => {
   const appContextValue = useContext(appContext);
@@ -26,31 +27,34 @@ const FirstChild = () => {
       <h1>First Child</h1>
       appState: {appContextValue.appState.user.name}
     </div>
-  )
-}
+  );
+};
 
 const SecondChild = () => {
   const appContextValue = useContext(appContext);
 
   const onChange = (event) => {
     console.log('event -> ', event.target.value);
-    appContextValue.setAppState({user: {...appContextValue.appState.user, name: event.target.value}});
-  }
+    appContextValue.setAppState(createNewState(appContextValue.appState, {
+      type: 'updateUserName',
+      payload: {name: event.target.value}
+    }));
+  };
 
   return (
     <div className='child'>
       <h1>Second Child</h1>
       <input type="text" value={appContextValue.appState.user.name} onChange={onChange}/>
     </div>
-  )
-}
+  );
+};
 
 const LastChild = () => {
   return (
     <div className='child'>
       <h1>Last Child</h1>
     </div>
-  )
-}
+  );
+};
 
 export default SelfAchieve;
