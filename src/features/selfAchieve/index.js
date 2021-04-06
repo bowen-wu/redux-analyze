@@ -7,6 +7,7 @@ const SelfAchieve = () => {
       <h1>Self Achieve</h1>
       <FirstChild/>
       <SecondChild/>
+      <ThirdChild/>
       <LastChild/>
     </appContext.Provider>
   );
@@ -37,6 +38,15 @@ const SecondChild = connect(({updateState, state}) => {
     <div className='child'>
       <h1>Second Child</h1>
       <input type="text" value={state.user.name} onChange={onChange}/>
+    </div>
+  );
+});
+
+const ThirdChild = connect(() => {
+  console.log('ThirdChild render');
+  return (
+    <div className='child'>
+      <h1>Third Child</h1>
     </div>
   );
 });
