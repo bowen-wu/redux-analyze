@@ -1,12 +1,9 @@
-import React, {useContext, useState} from 'react';
-import {connect, appContext} from './redux';
+import React from 'react';
+import {connect, appContext, store} from './redux';
 
 const SelfAchieve = () => {
-  const [appState, setAppState] = useState({user: {name: 'react', age: 18}});
-
-  const contextValue = {appState, setAppState};
   return (
-    <appContext.Provider value={contextValue}>
+    <appContext.Provider value={store}>
       <h1>Self Achieve</h1>
       <FirstChild/>
       <SecondChild/>
@@ -22,7 +19,7 @@ const FirstChild = connect(({state}) => {
   return (
     <div className='child'>
       <h1>First Child</h1>
-      appState: {state.appState.user.name}
+      appState: {state.user.name}
     </div>
   );
 });
@@ -39,7 +36,7 @@ const SecondChild = connect(({updateState, state}) => {
   return (
     <div className='child'>
       <h1>Second Child</h1>
-      <input type="text" value={state.appState.user.name} onChange={onChange}/>
+      <input type="text" value={state.user.name} onChange={onChange}/>
     </div>
   );
 });

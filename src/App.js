@@ -7,7 +7,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <Counter/>
+      {/*<Counter/>*/}
       <SelfAchieve/>
 
       <div className='divide'>divide</div>

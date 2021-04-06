@@ -1,4 +1,5 @@
 const reducers = (state, action) => {
+  console.log('state -> ', state);
   switch (action.type) {
     case 'updateUserName':
       return {
