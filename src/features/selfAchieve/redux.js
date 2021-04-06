@@ -16,7 +16,7 @@ export const store = {
 
 export const reducers = (state, action) => {
   switch (action.type) {
-    case 'updateUserName':
+    case 'updateUser':
       return {
         ...state,
         user: {
@@ -31,21 +31,21 @@ export const reducers = (state, action) => {
 
 export const appContext = React.createContext(null);
 
-export const connect = mapStateToProps => component => props => {
-  console.log('store.listener -> ', store.listener);
-
+export const connect = (mapStateToProps, mapDispatchToProps) => component => props => {
   const appContextValue = useContext(appContext);
   const [, setUpdate] = useState({});
-  const selectorState = typeof mapStateToProps === 'function' ? mapStateToProps(appContextValue.state) : appContextValue.state;
+  const selectedState = typeof mapStateToProps === 'function' ? mapStateToProps(appContextValue.state) : appContextValue.state;
 
-  useEffect(() => appContextValue.subscribe((newState) => {
+  useEffect(() => appContextValue.subscribe(newState => {
     const newSelectorState = typeof mapStateToProps === 'function' ? mapStateToProps(newState) : newState;
-    if (!shallowEqual(newSelectorState, selectorState)) {
+    if (!shallowEqual(newSelectorState, selectedState)) {
       setUpdate({});
     }
-  }), [appContextValue, selectorState]);
+  }), [appContextValue, selectedState]);
 
-  const updateState = (action) => appContextValue.setState(reducers(appContextValue.state, action));
+  const dispatch = action => appContextValue.setState(reducers(appContextValue.state, action));
 
-  return React.createElement(component, {updateState, ...selectorState}, props.children);
+  const dispatchers = typeof mapDispatchToProps === 'function' ? mapDispatchToProps(dispatch) : {dispatch};
+
+  return React.createElement(component, {...dispatchers, ...selectedState}, props.children);
 };

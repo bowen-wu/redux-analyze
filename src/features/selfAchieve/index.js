@@ -14,7 +14,15 @@ const SelfAchieve = () => {
 
 };
 
-const FirstChild = connect(state => ({user: state.user}))(({user}) => {
+const mapStateToProps = state => ({user: state.user});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    updateUser: payload => dispatch({type: 'updateUser', payload})
+  };
+};
+
+const FirstChild = connect(mapStateToProps)(({user}) => {
   return (
     <div className='child'>
       <h1>First Child</h1>
@@ -23,12 +31,9 @@ const FirstChild = connect(state => ({user: state.user}))(({user}) => {
   );
 });
 
-const SecondChild = connect()(({updateState, user}) => {
+const SecondChild = connect(mapStateToProps, mapDispatchToProps)(({updateUser, user}) => {
   const onChange = (event) => {
-    updateState({
-      type: 'updateUserName',
-      payload: {name: event.target.value}
-    });
+    updateUser({name: event.target.value});
   };
 
   return (
