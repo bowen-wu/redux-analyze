@@ -1,7 +1,5 @@
 import React, {useContext, useState} from 'react';
-import createNewState from './createNewState';
-
-const appContext = React.createContext(null);
+import {connect, appContext} from './redux';
 
 const SelfAchieve = () => {
   const [appState, setAppState] = useState({user: {name: 'react', age: 18}});
@@ -18,32 +16,18 @@ const SelfAchieve = () => {
 
 };
 
-const FirstChild = () => {
-  const appContextValue = useContext(appContext);
-  console.log('appContextValue -> ', appContextValue);
+const FirstChild = connect(({state}) => {
+  console.log('state -> ', state);
 
   return (
     <div className='child'>
       <h1>First Child</h1>
-      appState: {appContextValue.appState.user.name}
+      appState: {state.appState.user.name}
     </div>
   );
-};
+});
 
-const createWrapper = component => props => {
-  const appContextValue = useContext(appContext);
-
-  const updateState = (action) => {
-    appContextValue.setAppState(createNewState(appContextValue.appState, action));
-  };
-
-  return React.createElement(component, {updateState}, props.children);
-};
-
-
-const SecondChild = createWrapper(({updateState}) => {
-  const appContextValue = useContext(appContext);
-
+const SecondChild = connect(({updateState, state}) => {
   const onChange = (event) => {
     console.log('event -> ', event.target.value);
     updateState({
@@ -55,12 +39,13 @@ const SecondChild = createWrapper(({updateState}) => {
   return (
     <div className='child'>
       <h1>Second Child</h1>
-      <input type="text" value={appContextValue.appState.user.name} onChange={onChange}/>
+      <input type="text" value={state.appState.user.name} onChange={onChange}/>
     </div>
   );
 });
 
 const LastChild = () => {
+  console.log('LastChild render');
   return (
     <div className='child'>
       <h1>Last Child</h1>

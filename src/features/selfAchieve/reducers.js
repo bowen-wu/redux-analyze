@@ -1,4 +1,4 @@
-const createNewState = (state, action) => {
+const reducers = (state, action) => {
   switch (action.type) {
     case 'updateUserName':
       return {
@@ -14,4 +14,4 @@ const createNewState = (state, action) => {
 
 };
 
-export default createNewState;
+export default reducers;

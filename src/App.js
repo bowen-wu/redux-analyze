@@ -8,11 +8,11 @@ function App() {
   return (
     <div className="App">
       <Counter/>
-      {/*<SelfAchieve/>*/}
+      <SelfAchieve/>
 
       <div className='divide'>divide</div>
 
-      <OriginalRedux/>
+      {/*<OriginalRedux/>*/}
     </div>
   );
 }
