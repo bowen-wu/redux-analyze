@@ -1,16 +1,17 @@
 import React, {useContext, useEffect, useState} from 'react';
+import shallowEqual from './utils';
 
 export const store = {
   state: {user: {name: 'react', age: 18}},
   setState(newState) {
     store.state = newState;
-    store.listener.map(callback => callback());
+    store.listener.map(callback => callback(newState));
   },
   listener: [],
   subscribe(callback) {
     store.listener.push(callback);
   }
-}
+};
 
 export const reducers = (state, action) => {
   switch (action.type) {
@@ -29,17 +30,26 @@ export const reducers = (state, action) => {
 
 export const appContext = React.createContext(null);
 
-export const connect = component => props => {
+export const connect = mapStateToProps => component => props => {
+  console.log('store.listener -> ', store.listener);
+
   const appContextValue = useContext(appContext);
   const [, setUpdate] = useState({});
+  const selectorState = typeof mapStateToProps === 'function' ? mapStateToProps(appContextValue.state) : appContextValue.state;
 
   useEffect(() => {
-    appContextValue.subscribe(() => setUpdate({}));
-  }, [appContextValue]);
+    // 需要比较 current vs before 的 state 是否更改，更改 setUpdate
+    appContextValue.subscribe((newState) => {
+      const newSelectorState = typeof mapStateToProps === 'function' ? mapStateToProps(newState) : newState;
+      if (!shallowEqual(newSelectorState, selectorState)) {
+        setUpdate({});
+      }
+    });
+  }, [appContextValue, selectorState]);
 
   const updateState = (action) => {
     appContextValue.setState(reducers(appContextValue.state, action));
   };
 
-  return React.createElement(component, {updateState, state: appContextValue.state}, props.children);
+  return React.createElement(component, {updateState, ...selectorState}, props.children);
 };

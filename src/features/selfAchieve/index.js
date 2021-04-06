@@ -14,20 +14,17 @@ const SelfAchieve = () => {
 
 };
 
-const FirstChild = connect(({state}) => {
-  console.log('state -> ', state);
-
+const FirstChild = connect(state => ({user: state.user}))(({user}) => {
   return (
     <div className='child'>
       <h1>First Child</h1>
-      appState: {state.user.name}
+      appState: {user.name}
     </div>
   );
 });
 
-const SecondChild = connect(({updateState, state}) => {
+const SecondChild = connect()(({updateState, user}) => {
   const onChange = (event) => {
-    console.log('event -> ', event.target.value);
     updateState({
       type: 'updateUserName',
       payload: {name: event.target.value}
@@ -37,12 +34,12 @@ const SecondChild = connect(({updateState, state}) => {
   return (
     <div className='child'>
       <h1>Second Child</h1>
-      <input type="text" value={state.user.name} onChange={onChange}/>
+      <input type="text" value={user.name} onChange={onChange}/>
     </div>
   );
 });
 
-const ThirdChild = connect(() => {
+const ThirdChild = connect(() => ({}))(() => {
   console.log('ThirdChild render');
   return (
     <div className='child'>
