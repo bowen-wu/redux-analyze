@@ -10,6 +10,7 @@ export const store = {
   listener: [],
   subscribe(callback) {
     store.listener.push(callback);
+    return () => store.listener.splice(store.listener.indexOf(callback), 1);
   }
 };
 
@@ -37,19 +38,14 @@ export const connect = mapStateToProps => component => props => {
   const [, setUpdate] = useState({});
   const selectorState = typeof mapStateToProps === 'function' ? mapStateToProps(appContextValue.state) : appContextValue.state;
 
-  useEffect(() => {
-    // 需要比较 current vs before 的 state 是否更改，更改 setUpdate
-    appContextValue.subscribe((newState) => {
-      const newSelectorState = typeof mapStateToProps === 'function' ? mapStateToProps(newState) : newState;
-      if (!shallowEqual(newSelectorState, selectorState)) {
-        setUpdate({});
-      }
-    });
-  }, [appContextValue, selectorState]);
+  useEffect(() => appContextValue.subscribe((newState) => {
+    const newSelectorState = typeof mapStateToProps === 'function' ? mapStateToProps(newState) : newState;
+    if (!shallowEqual(newSelectorState, selectorState)) {
+      setUpdate({});
+    }
+  }), [appContextValue, selectorState]);
 
-  const updateState = (action) => {
-    appContextValue.setState(reducers(appContextValue.state, action));
-  };
+  const updateState = (action) => appContextValue.setState(reducers(appContextValue.state, action));
 
   return React.createElement(component, {updateState, ...selectorState}, props.children);
 };
