@@ -1,5 +1,5 @@
 import React from 'react';
-import {connect, appContext, createStore} from './redux';
+import {connect, Provider, createStore} from './redux';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -22,15 +22,14 @@ const store = createStore(reducer, initState);
 
 const SelfAchieve = () => {
   return (
-    <appContext.Provider value={store}>
+    <Provider store={store}>
       <h1>Self Achieve</h1>
       <FirstChild/>
       <SecondChild/>
       <ThirdChild/>
       <LastChild/>
-    </appContext.Provider>
+    </Provider>
   );
-
 };
 
 const mapStateToProps = state => ({user: state.user});
