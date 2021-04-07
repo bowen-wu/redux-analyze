@@ -1,6 +1,18 @@
 import React, {useContext, useEffect, useState} from 'react';
 import shallowEqual from './utils';
 
+export const appContext = React.createContext(null);
+
+export const Provider = (props) => {
+  const {store, children, ...rest} = props;
+
+  return (
+    <appContext.Provider value={store} {...rest}>
+      {children}
+    </appContext.Provider>
+  );
+};
+
 export const createStore = (reducer, preloadedState) => {
   const state = preloadedState || null;
   const store = {
@@ -18,8 +30,6 @@ export const createStore = (reducer, preloadedState) => {
   };
   return store;
 };
-
-export const appContext = React.createContext(null);
 
 export const connect = (mapStateToProps, mapDispatchToProps) => component => props => {
   const {state, subscribe, reducer, setState} = useContext(appContext);
