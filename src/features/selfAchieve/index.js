@@ -1,5 +1,24 @@
 import React from 'react';
-import {connect, appContext, store} from './redux';
+import {connect, appContext, createStore} from './redux';
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'updateUser':
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload
+        }
+      };
+    default:
+      throw new Error('unknown Action Type');
+  }
+};
+
+const initState = {user: {name: 'react', age: 18}};
+
+const store = createStore(reducer, initState);
 
 const SelfAchieve = () => {
   return (
@@ -32,9 +51,7 @@ const FirstChild = connect(mapStateToProps)(({user}) => {
 });
 
 const SecondChild = connect(mapStateToProps, mapDispatchToProps)(({updateUser, user}) => {
-  const onChange = (event) => {
-    updateUser({name: event.target.value});
-  };
+  const onChange = event => updateUser({name: event.target.value});
 
   return (
     <div className='child'>
