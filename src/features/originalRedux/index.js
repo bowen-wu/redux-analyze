@@ -77,8 +77,6 @@ const OriginalRedux = () => {
       <FirstChild/>
       <SecondChild state={store}/>
 
-      <div className='divide'>divide</div>
-
       <ApplyMiddlewareDemo/>
 
     </div>
