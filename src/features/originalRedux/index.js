@@ -2,8 +2,15 @@
  * redux
  */
 import React, {useEffect, useState} from 'react';
-import {createStore, combineReducers} from 'redux';
-import {Reducer} from '../../../../redux/src';
+import {createStore, combineReducers, compose} from 'redux';
+
+const add = (a, b) => a + b;
+const square = n => n * n;
+const increase = n => n + 1;
+console.log('compose() -> ', compose());
+const addSquare = compose(increase, square, add);
+const value = addSquare(1, 2);
+console.log('value -> ', value);
 
 /**
  * action
