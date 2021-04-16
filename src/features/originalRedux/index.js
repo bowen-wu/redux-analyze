@@ -3,6 +3,7 @@
  */
 import React, {useEffect, useState} from 'react';
 import {createStore, combineReducers, compose} from 'redux';
+import ApplyMiddlewareDemo from './applyMiddleware';
 
 const add = (a, b) => a + b;
 const square = n => n * n;
@@ -33,7 +34,6 @@ const todos = (state = [], action) => {
     default:
       return state;
   }
-
 };
 
 /**
@@ -76,6 +76,11 @@ const OriginalRedux = () => {
     <div>
       <FirstChild/>
       <SecondChild state={store}/>
+
+      <div className='divide'>divide</div>
+
+      <ApplyMiddlewareDemo/>
+
     </div>
   );
 };
