@@ -3,6 +3,7 @@ import {Counter} from './features/counter/Counter';
 import SelfAchieve from './features/selfAchieve';
 import OriginalRedux from './features/originalRedux';
 import ReduxThunkDemo from './features/reduxThunk';
+import ReduxSagaDemo from './features/reduxSaga';
 import './App.css';
 
 function App() {
@@ -15,7 +16,9 @@ function App() {
 
       {/*<OriginalRedux/>*/}
 
-      <ReduxThunkDemo/>
+      {/*<ReduxThunkDemo/>*/}
+
+      <ReduxSagaDemo/>
     </div>
   );
 }
