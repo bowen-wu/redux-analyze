@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import mySaga from './sagas';
+import {childSaga, watchAndLog, congratulationSaga} from './sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -25,7 +25,6 @@ const todos = (state = [], action) => {
 };
 
 const userInfo = (state = {}, action) => {
-  console.log('reducers action -> ', action);
   switch (action.type) {
     case 'CHILD_BORNED':
       return {...action.payload};
@@ -36,13 +35,17 @@ const userInfo = (state = {}, action) => {
   }
 };
 
-const rootReducer = combineReducers({todos, userInfo});
+const justAdult = (state = false, action) => action.type === 'SHOW_CONGRATULATION';
+
+const rootReducer = combineReducers({todos, userInfo, justAdult});
 
 const preloadState = {todos: [{id: 10341, text: 'init', completed: false}]};
 
 const store = createStore(rootReducer, preloadState, applyMiddleware(sagaMiddleware));
 
-sagaMiddleware.run(mySaga);
+sagaMiddleware.run(watchAndLog);
+sagaMiddleware.run(childSaga);
+sagaMiddleware.run(congratulationSaga);
 
 const ReduxSagaDemo = () => {
   return (
@@ -77,7 +80,6 @@ const SecondChild = (props) => {
 
   useEffect(() => {
     const unSubscribe = props.state.subscribe(() => {
-      console.log('subscribe -> ', store.getState());
       setUpdate({});
     });
     return () => {
@@ -90,6 +92,7 @@ const SecondChild = (props) => {
       <h1>Second Child</h1>
       <div>Name: {props.state.getState().userInfo && props.state.getState().userInfo.name}</div>
       <div>Age: {props.state.getState().userInfo && props.state.getState().userInfo.age}</div>
+      {props.state.getState().justAdult ? <div style={{color: 'red'}}>You are a Adult</div> : null}
     </div>
   );
 };

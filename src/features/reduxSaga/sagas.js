@@ -1,4 +1,4 @@
-import {call, put, takeEvery} from 'redux-saga/effects';
+import {call, put, takeEvery, select, take, takeLatest} from 'redux-saga/effects';
 
 const sleep = (duration, params) => new Promise((resolve) => setTimeout(resolve, duration, params));
 
@@ -13,30 +13,74 @@ const Api = {
 
 function* childWillBorn(action) {
   try {
-    // 此处也可以使用 yield delay(1000);
-    const {data: child} = yield call(Api.childBorned);
-    yield put({type: 'CHILD_BORNED', payload: child});
+    const state = yield select();
+    if (state.userInfo.name) {
+      throw new Error('Had Child!');
+    } else {
+      const {data: child} = yield call(Api.childBorned);
+      yield put({type: 'CHILD_BORNED', payload: child});
+    }
   } catch (e) {
-    yield put({type: 'USER_FETCH_FAILED', message: e.message});
+    alert(e.message);
   }
 }
 
 function* childGrow(action) {
   try {
-    const {data: age} = yield call(Api.growed, action.payload);
-    yield put({type: 'GROWED', payload: age});
+    const state = yield select();
+    if (state.userInfo.name) {
+      const {data: age} = yield call(Api.growed, action.payload);
+      yield put({type: 'GROWED', payload: age});
+    } else {
+      throw new Error('No Child!');
+    }
   } catch (e) {
-    yield put({type: 'USER_FETCH_FAILED', message: e.message});
+    alert(e.message);
   }
 }
+
+function* logger(action) {
+  const state = yield select();
+
+  console.log('action -> ', action);
+  console.log('state after -> ', state);
+}
+
 
 /*
   Starts fetchUser on each dispatched `USER_FETCH_REQUESTED` action.
   Allows concurrent fetches of user.
 */
-function* mySaga() {
-  yield takeEvery('CHILD_WILL_BORN', childWillBorn);
-  yield takeEvery('CHILD_GROW', childGrow);
+function* childSaga() {
+  yield takeLatest('CHILD_WILL_BORN', childWillBorn);
+  yield takeLatest('CHILD_GROW', childGrow);
+
+
 }
 
-export default mySaga;
+function* congratulationSaga() {
+  while (true) {
+    const action = yield take('CHILD_GROW');
+    const state = yield select();
+    console.log('Grow', action, state.userInfo);
+    if (state.userInfo.age && state.userInfo.age > 17) {
+      break;
+    }
+  }
+  console.log('stop listener');
+  yield put({type: 'SHOW_CONGRATULATION'});
+  // 终止，之后将不再进行监听
+}
+
+function* watchAndLog() {
+  // yield takeEvery('*', logger)
+  while (true) {
+    const action = yield take('*');
+    const state = yield select();
+
+    // console.log('action -> ', action);
+    // console.log('state after -> ', state);
+  }
+}
+
+export {childSaga, watchAndLog, congratulationSaga};
